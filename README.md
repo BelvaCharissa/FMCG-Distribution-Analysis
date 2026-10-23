@@ -8,6 +8,8 @@ The application integrates sales performance, delivery operations, inventory ava
 
 By translating operational data into visual insights, the dashboard helps identify distribution bottlenecks, prioritize outlets requiring intervention, and evaluate potential improvements in logistics and inventory management.
 
+<img width="951" height="875" alt="image" src="https://github.com/user-attachments/assets/ccc817cb-738a-431d-be03-ed781f62c682" />
+
 ## Key Features
 
 ### 1. Interactive Distribution Map
