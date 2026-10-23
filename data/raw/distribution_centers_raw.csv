@@ -1,0 +1,4 @@
+Distribution_Center_ID,DC_Name,City,Latitude,Longitude,Daily_Capacity_Cartons,Fleet_Size
+DC-JKT-01,Central Jakarta Logistics Hub (Ciracas),Jakarta Timur,-6.325,106.872,15000,35
+DC-BKS-02,East Megahub Cikarang,Bekasi,-6.298,107.132,25000,50
+DC-TNG-03,West Distribution Depot (Bitung),Tangerang,-6.241,106.562,18000,40

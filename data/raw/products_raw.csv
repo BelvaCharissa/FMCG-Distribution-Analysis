@@ -1,0 +1,21 @@
+Category,Product_ID,Product_Name,Unit_Price_IDR,Units_Per_Carton
+Beverage,PRD-BEV-001,Teh Kotak Melati 250ml,4500,24
+Beverage,PRD-BEV-002,Air Mineral Aqua 600ml,3500,24
+Beverage,PRD-BEV-003,Kopi Susu Mantap Botol 200ml,7000,24
+Beverage,PRD-BEV-004,Minuman Isotonik Mizone 500ml,6500,24
+Beverage,PRD-BEV-005,Sari Kacang Ijo Ultra 250ml,5000,24
+Personal Care,PRD-PC-001,Shampoo Anti Ketombe Clear 160ml,28000,12
+Personal Care,PRD-PC-002,Sabun Mandi Lifebuoy Bar 85g,4200,36
+Personal Care,PRD-PC-003,Pasta Gigi Pepsodent 190g,14500,24
+Personal Care,PRD-PC-004,Deterjen Rinso Molto 770g,21500,12
+Personal Care,PRD-PC-005,Pembersih Lantai Super Pell 770ml,13000,12
+Packaged Food,PRD-FD-001,Indomie Goreng Spesial 85g,3100,40
+Packaged Food,PRD-FD-002,Indomie Kuah Ayam Bawang 69g,2900,40
+Packaged Food,PRD-FD-003,Biskuit Roma Kelapa 300g,11500,20
+Packaged Food,PRD-FD-004,Keripik Chitato Sapi Panggang 68g,12000,30
+Packaged Food,PRD-FD-005,Kusuka Keripik Singkong 180g,16000,20
+Packaged Food,PRD-FD-006,Samyang Hot Chicken Ramen 140g,22000,20
+Dairy,PRD-DY-001,Susu UHT Ultra Milk Cokelat 1L,21000,12
+Dairy,PRD-DY-002,Susu Kental Manis Frisian Flag 370g,12500,48
+Dairy,PRD-DY-003,Susu UHT Dancow FortiGro 115ml,4500,36
+Dairy,PRD-DY-004,Keju Kraft Cheddar All-in-One 160g,15500,24

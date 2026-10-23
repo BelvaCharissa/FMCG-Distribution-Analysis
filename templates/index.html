@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FMCG Distribution Analytics — Jabodetabek Network Intelligence</title>
+    <meta name="description"
+        content="Geospatial distribution analytics and supply chain decision support for FMCG outlet network in Jabodetabek region.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/leaflet.css">
+    <script src="/static/js/leaflet.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css?v=3">
+</head>
+
+<body>
+
+    <!-- TOP COMPACT NAVBAR -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="brand-badge">DA</div>
+            <div class="brand-titles">
+                <span class="brand-title">FMCG Distribution Analytics</span>
+                <span class="brand-subtitle">Jabodetabek Network Intelligence & Logistics Optimization</span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="header-stat">
+                <span class="stat-caption">Periode Data</span>
+                <span class="stat-highlight">90 Hari Terakhir</span>
+            </div>
+            <div class="header-divider"></div>
+            <div class="header-stat">
+                <span class="stat-caption">Cakupan Wilayah</span>
+                <span class="stat-highlight">Jabodetabek (3 DC)</span>
+            </div>
+            <button class="btn btn-outline btn-sm" id="btn-refresh">Muat Ulang Data</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="app-container">
+
+        <!-- KPI SUMMARY BAR -->
+        <section class="kpi-banner">
+            <div class="kpi-card">
+                <div class="kpi-label">Total Omzet Jaringan</div>
+                <div class="kpi-value" id="kpi-revenue">Memuat...</div>
+                <div class="kpi-sub">Akumulasi 90 hari</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Outlet Aktif</div>
+                <div class="kpi-value" id="kpi-outlets">—</div>
+                <div class="kpi-sub" id="kpi-dcs-count">Dilayani oleh 3 DC</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Rata-rata Stockout</div>
+                <div class="kpi-value kpi-warning" id="kpi-stockout">—</div>
+                <div class="kpi-sub">Frekuensi ketiadaan stok</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">On-Time Delivery</div>
+                <div class="kpi-value kpi-primary" id="kpi-otd">—</div>
+                <div class="kpi-sub" id="kpi-delay">Rata-rata delay: — mnt</div>
+            </div>
+            <div class="kpi-card kpi-card-alert">
+                <div class="kpi-label">Outlet Prioritas Kritis</div>
+                <div class="kpi-value kpi-danger" id="kpi-priority-count">—</div>
+                <div class="kpi-sub">Omzet tinggi, stockout parah</div>
+            </div>
+        </section>
+
+        <!-- MAP & PRIORITY SECTION -->
+        <section class="map-section-wrap">
+            <div class="workspace-header">
+                <div>
+                    <h2 class="section-heading">Peta Persebaran & Prioritas Tindak Lanjut</h2>
+                    <p class="section-subheading">Identifikasi kepadatan outlet, zonasi distribusi DC, dan pemeringkatan
+                        outlet yang butuh intervensi pasokan segera.</p>
+                </div>
+                <div class="quick-status-bar">
+                    <span class="engine-badge">OpenStreetMap Live</span>
+                    <span class="cluster-summary-badge" id="badge-total-outlets">1.000 Outlet</span>
+                </div>
+            </div>
+
+            <!-- MAP LAYOUT: LEFT SIDEBAR + MAP -->
+            <div class="map-layout" style="display: flex; height: 400px; overflow: hidden;">
+                <!-- PANEL FILTER & RANKING -->
+                <aside class="control-panel" style="width: 300px; height: 100%; overflow-y: auto;">
+                    <!-- FILTER BOX -->
+                    <div class="panel-box">
+                        <div class="panel-box-header">
+                            <span class="panel-box-title">Filter Analitis</span>
+                            <button class="btn-text" id="btn-reset-filters">Reset</button>
+                        </div>
+
+                        <div class="filter-grid">
+                            <div class="filter-field">
+                                <label for="filter-region">Wilayah</label>
+                                <select id="filter-region" class="select-control">
+                                    <option value="all">Semua Wilayah</option>
+                                    <option value="Jakarta">Jakarta</option>
+                                    <option value="Tangerang">Tangerang & Serpong</option>
+                                    <option value="Bekasi">Bekasi & Cikarang</option>
+                                    <option value="Depok-Bogor">Depok & Cibinong</option>
+                                    <option value="Bogor Fringe">Bogor Selatan</option>
+                                    <option value="Banten Fringe">Banten Barat</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-field">
+                                <label for="filter-type">Tipe Outlet</label>
+                                <select id="filter-type" class="select-control">
+                                    <option value="all">Semua Tipe</option>
+                                    <option value="Warung Kelontong">Warung Kelontong</option>
+                                    <option value="Minimarket">Minimarket</option>
+                                    <option value="Supermarket">Supermarket</option>
+                                    <option value="Wholesaler">Wholesaler</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-field">
+                                <label for="filter-cluster">Klaster Geografis</label>
+                                <select id="filter-cluster" class="select-control">
+                                    <option value="all">Semua Klaster</option>
+                                    <option value="3">Jakarta Pusat & Selatan</option>
+                                    <option value="4">Tangerang & Serpong</option>
+                                    <option value="2">Bekasi & Tambun</option>
+                                    <option value="1">Sub-Regional Selatan</option>
+                                    <option value="0">Barat Daya</option>
+                                    <option value="-1">Outlet Terpencil (Outlier)</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-field">
+                                <label for="filter-tier">Tingkat Bahaya / Prioritas</label>
+                                <select id="filter-tier" class="select-control">
+                                    <option value="all">Semua Kategori</option>
+                                    <option value="high">Kritis (Skor >= 65)</option>
+                                    <option value="medium">Sedang (Skor 45-64)</option>
+                                    <option value="noise">Outlet Terpencil</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="filter-stats-strip">
+                            <div><span class="lbl">Outlet:</span> <strong id="filtered-count">—</strong></div>
+                            <div><span class="lbl">Omzet:</span> <strong id="filtered-revenue">—</strong></div>
+                            <div><span class="lbl">Delay:</span> <strong id="filtered-delay">—</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- RANKING LIST: FROM MOST DANGEROUS TO LEAST -->
+                    <div class="panel-box ranking-box" style="flex: 1; min-height: 0; overflow: hidden;">
+                        <div class="panel-box-header">
+                            <div>
+                                <span class="panel-box-title">Urutan Outlet Kritis</span>
+                                <span class="panel-box-sub">Diurutkan dari paling rawan stockout & lost sales</span>
+                            </div>
+                            <span class="badge-count" id="priority-list-count">0</span>
+                        </div>
+
+                        <div class="priority-list-scroll" id="priority-list">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- MAP WRAPPER -->
+                <div class="map-viewport"
+                    style="flex: 1; height: 100%; position: relative; z-index: 1; overflow: hidden;">
+                    <div id="leaflet-map" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;"></div>
+
+                    <!-- FLOATING LEGEND -->
+                    <div class="map-legend">
+                        <div class="legend-header">Keterangan Peta</div>
+                        <div class="legend-items">
+                            <div class="legend-row">
+                                <span class="legend-symbol dc-symbol"></span>
+                                <span>Pusat Distribusi (3 DC)</span>
+                            </div>
+                            <div class="legend-row">
+                                <span class="legend-symbol crit-symbol"></span>
+                                <span>Outlet Kritis (Skor >= 65)</span>
+                            </div>
+                            <div class="legend-row">
+                                <span class="legend-symbol" style="background:#3b82f6;"></span>
+                                <span>Klaster Jakarta</span>
+                            </div>
+                            <div class="legend-row">
+                                <span class="legend-symbol" style="background:#f97316;"></span>
+                                <span>Klaster Tangerang</span>
+                            </div>
+                            <div class="legend-row">
+                                <span class="legend-symbol" style="background:#10b981;"></span>
+                                <span>Klaster Bekasi</span>
+                            </div>
+                            <div class="legend-row">
+                                <span class="legend-symbol" style="background:#ef4444;"></span>
+                                <span>Klaster Sub-Regional</span>
+                            </div>
+                            <div class="legend-row">
+                                <span class="legend-symbol" style="background:#8b5cf6;"></span>
+                                <span>Klaster Barat Daya</span>
+                            </div>
+                            <div class="legend-row">
+                                <span class="legend-symbol" style="background:#94a3b8;"></span>
+                                <span>Outlet Terpencil (Outlier)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DATA TABLE SECTION BELOW MAP -->
+        <section class="table-section">
+            <div class="table-bar">
+                <div class="table-bar-left">
+                    <h3 class="table-heading">Daftar Rinci Outlet Sesuai Filter</h3>
+                    <span class="table-subheading">Data granular 1.000 outlet terintegrasi dengan filter pencarian dan
+                        skor prioritas rantai pasok</span>
+                </div>
+                <div class="table-bar-right">
+                    <div class="search-input-wrap">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" id="table-search" placeholder="Cari nama toko, ID, atau wilayah..."
+                            class="search-field">
+                    </div>
+                    <button class="btn btn-outline btn-sm" id="btn-export-csv">Ekspor CSV</button>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID Outlet</th>
+                                <th>Nama Toko</th>
+                                <th>Tipe Outlet</th>
+                                <th>Wilayah</th>
+                                <th>Klaster Bisnis</th>
+                                <th>Omzet (90 Hari)</th>
+                                <th>Tingkat Stockout</th>
+                                <th>Rata-rata Delay</th>
+                                <th>Jarak ke DC</th>
+                                <th>Skor Bahaya</th>
+                                <th>Status Prioritas</th>
+                                <th>Rekomendasi Operasional</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-pagination-bar">
+                    <span class="pagination-summary" id="pagination-info">—</span>
+                    <div class="pagination-controls">
+                        <button class="btn btn-outline btn-xs" id="btn-prev-page">Sebelumnya</button>
+                        <span class="pagination-page" id="page-num">—</span>
+                        <button class="btn btn-outline btn-xs" id="btn-next-page">Berikutnya</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="/static/js/app.js"></script>
+</body>
+
+</html>
