@@ -1,80 +1,122 @@
-# Sistem Analisis Distribusi & Rantai Pasok FMCG
+# FMCG Distribution & Supply Chain Analytics
 
-Aplikasi web pendukung keputusan (*decision support tool*) berbasis data geospasial dan kinerja rantai pasok untuk industri FMCG (*Fast-Moving Consumer Goods*).
+## Overview
 
-Aplikasi ini menghubungkan data transaksi penjualan, pemenuhan pengiriman logistik, audit ketersediaan persediaan (*stockout*), dan koordinat geospasial untuk mengevaluasi jaringan distribusi di wilayah Jabodetabek (1.250 outlet dan 3 Distribution Center).
+FMCG Distribution & Supply Chain Analytics is an interactive analytics dashboard designed to evaluate and optimize distribution network performance in the Fast-Moving Consumer Goods (FMCG) industry.
 
----
+The application integrates sales performance, delivery operations, inventory availability, and geographic data to provide actionable insights into distribution efficiency across the Jabodetabek region. The analysis covers 1,250 retail outlets and three Distribution Centers (DCs): Ciracas, Cikarang, and Bitung.
 
-## 🚀 Menjalankan Aplikasi di Lokal
+By translating operational data into visual insights, the dashboard helps identify distribution bottlenecks, prioritize outlets requiring intervention, and evaluate potential improvements in logistics and inventory management.
 
-Aplikasi web dapat langsung diakses melalui browser:
+## Key Features
 
-👉 **[http://127.0.0.1:5050](http://127.0.0.1:5050)**
+### 1. Interactive Distribution Map
 
-Jika Anda ingin menjalankan ulang server dari terminal PowerShell:
-```powershell
-# Masuk ke direktori proyek
-cd "c:\Users\Belva\Documents\Project FMCG"
+Visualizes retail outlets and distribution centers across Jabodetabek to support geographic analysis of distribution performance.
 
-# Jalankan server aplikasi
-python -u app.py
+Key capabilities:
+- Display of 1,250 retail outlets and three distribution centers.
+- Color-coded outlet markers based on operational urgency and stockout conditions.
+- Outlet-level performance details, including 90-day revenue, stockout rate, average delivery delay, and recommended actions.
+
+### 2. Operational Diagnostics
+
+Identifies key distribution challenges by analyzing inventory availability, delivery performance, revenue contribution, and distribution center workload.
+
+The dashboard highlights the following operational findings:
+
+- **Regional Stockout Issues:** The southern subregion records a stockout rate of 35.5%, accompanied by an average delivery delay of 87.8 minutes.
+- **Low-Efficiency Delivery Routes:** A group of 146 remote outlets contributes 11.1% of total revenue while experiencing an average delivery delay of 50.2 minutes.
+- **Uneven Distribution Center Workload:** The Ciracas Distribution Center handles more than 58% of the network's total volume, indicating a potential imbalance in operational capacity.
+
+These findings help identify areas where improvements in inventory planning, delivery allocation, and distribution network design may have the greatest impact.
+
+### 3. Outlet Priority Matrix
+
+Classifies retail outlets into four operational categories based on demand and stockout rates. This segmentation supports more targeted inventory and delivery decisions.
+
+| Category | Conditions | Recommended Action |
+|---|---|---|
+| Top Priority | High demand, high stockout rate | Prioritize replenishment and investigate recurring stockouts. |
+| Maintain Supply | High demand, low stockout rate | Maintain inventory availability and service levels. |
+| Evaluate Delivery | Low demand, high stockout rate | Review delivery frequency, minimum order quantities, and replenishment policies. |
+| Routine Monitoring | Low demand, low stockout rate | Continue routine monitoring and standard replenishment. |
+
+The matrix helps distinguish outlets that require immediate intervention from those that can be managed through standard operating procedures.
+
+### 4. What-If Scenario Simulation
+
+Evaluates potential operational improvements through adjustable simulation parameters.
+
+Users can modify delivery delay and safety stock assumptions to estimate their potential impact on:
+- Recovered revenue from reduced stockouts and improved product availability.
+- Fuel efficiency resulting from potential improvements in distribution operations.
+
+The simulation supports scenario comparison and preliminary decision-making by illustrating how changes in operational assumptions may affect business outcomes.
+
+*Simulation results represent model-based estimates and should not be interpreted as guaranteed real-world improvements.*
+
+## Business Value
+
+The dashboard is designed to support data-driven distribution decisions in four key areas:
+
+- **Inventory Optimization:** Identify outlets with recurring stockouts and prioritize replenishment.
+- **Logistics Efficiency:** Evaluate remote outlets and potential delivery allocation improvements.
+- **Distribution Network Balancing:** Identify workload concentration across distribution centers.
+- **Scenario Evaluation:** Estimate the potential business impact of alternative operational strategies before implementation.
+
+## Technology Stack
+
+The project uses Python for application development and data analysis, supported by interactive data visualization and geographic mapping components.
+
+The specific libraries, mapping services, and data-processing tools depend on the implementation available in this repository.
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.10 or a compatible version supported by the project.
+- Git.
+- Required Python packages listed in the project's dependency file, if provided.
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/BelvaCharissa/FMCG-Distribution-Analysis.git
 ```
 
----
+Navigate to the project directory:
 
-## 🗺️ Konfigurasi Peta (Google Maps Platform & OpenStreetMap Fallback)
-
-Aplikasi dirancang dengan arsitektur **Dual-Engine Map**:
-- **Default & Fallback:** Menggunakan OpenStreetMap (Leaflet.js) yang dapat berjalan langsung secara lokal tanpa memerlukan API key maupun billing account.
-- **Google Maps Platform:** Jika Anda memiliki Google Maps JavaScript API Key, Anda dapat memasangnya tanpa perlu mengubah kode sumber:
-
-### Cara Memasang Google Maps API Key:
-Set environment variable di terminal sebelum menjalankan `app.py`:
-```powershell
-# Set API Key di sesi PowerShell
-$env:GOOGLE_MAPS_API_KEY = "YOUR_ACTUAL_GOOGLE_MAPS_API_KEY"
-
-# Jalankan aplikasi
-python -u app.py
+```bash
+cd FMCG-Distribution-Analysis
 ```
-> **Catatan Keamanan:** 
-> - Jangan pernah melakukan *hardcode* API key di file frontend (`index.html` atau `app.js`).
-> - Pada Google Cloud Console, disarankan untuk membatasi API Key menggunakan **HTTP Referrer restriction** (misal: `http://127.0.0.1:5050/*` atau domain produksi Anda) dan hanya mengizinkan **Maps JavaScript API**.
-> - Jika API Key tidak diset atau kuota habis, aplikasi akan secara otomatis menggunakan OpenStreetMap sehingga dashboard tetap dapat digunakan secara normal.
 
----
+Install the required dependencies:
 
-## 📋 Fitur Utama Dashboard
+```bash
+pip install -r requirements.txt
+```
 
-### 1. 🗺️ Peta Persebaran Outlet
-- Memetakan 1.250 outlet dan 3 Distribution Center (Ciracas, Cikarang, Bitung).
-- Titik outlet diwarnai berdasarkan **Kelompok Kedekatan Wilayah** dan status urgensi (Merah untuk prioritas darurat, Abu-abu untuk outlet di luar kelompok utama).
-- Klik pada marker toko untuk melihat pop-up: nama toko, omzet 90 hari, tingkat stockout, rata-rata keterlambatan, jarak ke DC, dan saran tindakan.
-- Filter interaktif: Wilayah, Tipe Saluran Toko, Kelompok Wilayah, dan Tingkat Prioritas.
+If the repository does not include a `requirements.txt` file, install the dependencies specified by the project configuration.
 
-### 2. 📊 Diagnostik & Temuan Operasional
-Menyajikan temuan berbasis 4 pertanyaan bisnis:
-1. **Apa masalah yang ditemukan?**
-2. **Di wilayah mana masalah terjadi?**
-3. **Seberapa penting bagi operasional?**
-4. **Apa tindakan yang disarankan?**
+### Run the Application
 
-Tiga temuan utama yang didukung bukti data aktual:
-- **Temuan 1:** Ketiadaan Stok Kritis di Wilayah Sub-Regional Selatan (Stockout 35,5%, keterlambatan 87,8 menit, jarak tempuh 36 km).
-- **Temuan 2:** Beban Logistik Tinggi pada 146 Outlet Terpencil di Luar Kelompok Utama (Omzet 11,1%, delay 50,2 menit).
-- **Temuan 3:** Ketimpangan Beban Layanan pada DC Ciracas (>58% volume jaringan).
+Start the application using the following command:
 
-### 3. 📋 Matriks Prioritas Outlet (2x2 Kuadran)
-Memetakan outlet berdasarkan 2 indikator bisnis utama menggunakan nilai tengah (median) data aktual:
-- **Kuadran 1 (Prioritas Utama - 245 Toko):** Permintaan Tinggi, Stockout Tinggi. *Risiko lost sales terbesar; memerlukan peninjauan stok pengaman dan jadwal pengiriman segera.*
-- **Kuadran 2 (Pertahankan Pasokan - 380 Toko):** Permintaan Tinggi, Stockout Rendah. *Penopang omzet utama yang berjalan sehat; pertahankan jadwal rutin.*
-- **Kuadran 3 (Evaluasi Pengiriman - 396 Toko):** Permintaan Rendah, Stockout Tinggi. *Evaluasi frekuensi pengiriman atau ukuran minimum pemesanan (MOQ).*
-- **Kuadran 4 (Pemantauan Rutin - 229 Toko):** Permintaan Rendah, Stockout Rendah. *Kondisi stabil, pengawasan berkala.*
+```bash
+python app.py
+```
 
-Klik salah satu kuadran untuk langsung memfilter tabel outlet di bawahnya. Tabel mendukung pencarian teks, paginasi, dan tombol **Ekspor CSV**.
+Open the local URL displayed in the terminal to access the dashboard, if the application starts a local web server.
 
-### 4. ⚡ Simulasi Skenario (What-If Analysis)
-- Memproyeksikan dampak penurunan keterlambatan pengiriman (%) dan penambahan stok pengaman (%) terhadap penurunan persentase stockout.
-- Menyajikan perbandingan transparan antara **Kondisi Awal (Baseline)** vs **Hasil Proyeksi**.
-- Menghitung estimasi omzet yang diselamatkan (*recovered revenue*) dan efisiensi bahan bakar armada.
+## Project Scope
+
+This project focuses on distribution performance analytics, outlet prioritization, and operational scenario evaluation using sales, delivery, inventory, and geographic information.
+
+The dashboard is intended as a decision-support tool for exploring operational patterns and identifying opportunities for improvement. The reliability of the insights depends on the quality of the underlying data, analytical assumptions, and simulation methodology.
+
+## Repository
+
+GitHub: https://github.com/BelvaCharissa/FMCG-Distribution-Analysis
